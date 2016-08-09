@@ -1,9 +1,10 @@
 module.exports = function() {
-		var controller = {};
+	var controller = {};
 
-		controller.index = function(req, res) {
-				res.render('index', {nome: 'Express'});
-		};
+	controller.index = function(req, res) {
+		var vm = {nome: 'Express'};
+			res.render('index', vm);
+	};
 
-		return controller;
+	return controller;
 };
