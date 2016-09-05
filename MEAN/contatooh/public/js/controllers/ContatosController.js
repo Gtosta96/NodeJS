@@ -1,34 +1,33 @@
 angular.module('contatooh')
 
-.controller('ContatosController', function($scope) {
+.controller('ContatosController', function($scope, $resource) {
+    var Contato = $resource('/contatos/:id');
 
     var attributes = {
-        total: 0,
-        incrementa: incrementa,
         filtro: '',
-        contatos: contatos()
+        contatos: contatos(),
+        remove: remove
     };
     angular.extend($scope, attributes);
 
-    // FUNÇÕES
-    function incrementa() {
-        this.total++;
+    function contatos() {
+        Contato
+            .query(
+                function(contatos) {
+                    $scope.contatos = contatos;
+                },
+                function(erro) {
+                    console.log("Não foi possível obter a lista de contatos, %o", erro);
+                }
+            );
     };
 
-    function contatos() {
-        var contatos = [{
-            "_id": 1,
-            "nome": "Contato Angular 1",
-            "email": "cont1@empresa.com.br"
-        }, {
-            "_id": 2,
-            "nome": "Contato Angular 2",
-            "email": "cont2@empresa.com.br"
-        }, {
-            "_id": 3,
-            "nome": "Contato Angular 3",
-            "email": "cont3@empresa.com.br"
-        }];
-        return contatos;
-    };
+    function remove(contato) {
+        var promise = Contato.delete({id: contato.id}).$promise;
+        promise
+        .then(contatos)
+        .catch(function(erro) {
+            console.log("Não foi possível deletar o contato, %o", erro);
+        })
+    }
 });
