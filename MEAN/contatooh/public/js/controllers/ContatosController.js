@@ -3,21 +3,20 @@ angular.module('contatooh')
 .controller('ContatosController', function($scope, $resource) {
     var Contato = $resource('/contatos/:id');
 
-    var attributes = {
-        filtro: '',
-        contatos: contatos(),
-        remove: remove
-    };
-    angular.extend($scope, attributes);
+    $scope.mensagem = {};
+    $scope.filtro = '';
+    $scope.contatos = contatos();
+    $scope.remove = remove;
 
     function contatos() {
-        Contato
+        return Contato
             .query(
                 function(contatos) {
-                    $scope.contatos = contatos;
+                    setScopeProperty('mensagem', '');
+                    return contatos;
                 },
                 function(erro) {
-                    console.log("Não foi possível obter a lista de contatos, %o", erro);
+                    setScopeProperty('mensagem', {texto: 'Não foi possível obter a lista de contatos'});
                 }
             );
     };
@@ -27,7 +26,17 @@ angular.module('contatooh')
         promise
         .then(contatos)
         .catch(function(erro) {
-            console.log("Não foi possível deletar o contato, %o", erro);
+            setScopeProperty('mensagem', {texto: 'Não foi possível deletar o contato'});
         })
+    }
+
+    //Função auxiliar para isolar a atribuição do $scope na aplicação.
+    function setScopeProperty(property, def) {
+        if($scope.hasOwnProperty(property)) {
+            if(!def) console.warn('Definição da propriedade [%s] vazia', property);
+            $scope[property] = def;
+        } else {
+            console.error('Atributo não definido');
+        }
     }
 });

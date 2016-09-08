@@ -10,4 +10,5 @@ angular.module('contatooh', ['ngRoute', 'ngResource'])
 			templateUrl: 'partials/contato.html',
 			controller: 'ContatoController'
 		})
+		.otherwise({redirectTo:'/contatos'});
 });
