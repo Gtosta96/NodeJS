@@ -5,30 +5,29 @@ angular.module('contatooh')
 
     $scope.mensagem = {};
     $scope.filtro = '';
-    $scope.contatos = contatos();
+    $scope.contatos = getContatos();
     $scope.remove = remove;
 
-    function contatos() {
-        return Contato
-            .query(
-                function(contatos) {
-                    setScopeProperty('mensagem', '');
-                    return contatos;
-                },
-                function(erro) {
-                    setScopeProperty('mensagem', {texto: 'Não foi possível obter a lista de contatos'});
-                }
-            );
+    function getContatos() {
+        return Contato.query(function(contatos) {
+            setScopeProperty('mensagem', '');
+            return contatos; // TODO: verificar porque essa porra não funciona.
+        }, function(erro) {
+            setScopeProperty('mensagem', {
+                texto: 'Não foi possível obter a lista de contatos'
+            });
+        });
     };
 
     function remove(contato) {
         var promise = Contato.delete({id: contato.id}).$promise;
+
         promise
-        .then(contatos)
-        .catch(function(erro) {
-            setScopeProperty('mensagem', {texto: 'Não foi possível deletar o contato'});
-        })
-    }
+            .then(getContatos)
+            .catch(function(erro) {
+                setScopeProperty('mensagem', {texto: 'Não foi possível deletar o contato'});
+            });
+    };
 
     //Função auxiliar para isolar a atribuição do $scope na aplicação.
     function setScopeProperty(property, def) {

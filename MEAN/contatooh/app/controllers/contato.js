@@ -19,7 +19,7 @@ function obtemContato(req, res) {
 	var contatoId = req.params.id;
 	var contato = contatos.filter(function getElementById(contato) {
 		return contato.id == contatoId;
-	});
+	})[0]; // filter retorna um array, porém, $resource.get() espera um objeto.
 
 	contato ? res.json(contato) : res.status(404).send('Contato não encontrado');
 };
